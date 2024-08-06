@@ -8,6 +8,13 @@
     gap: 20px; /* Gap between columns */
   }
 
+  .container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin: auto;
+    align-items: center;
+  }
   .txtField {
    
     margin-top: 7px;

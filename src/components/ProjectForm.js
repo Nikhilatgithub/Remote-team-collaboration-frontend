@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Paper, TextField } from '@mui/material';
+import { Autocomplete, Button, Paper, TextField } from '@mui/material';
+import { getTodayDate, getTommorowDate } from '../modules/FormData';
 
 const ProjectForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    startDate: '',
-    endDate: ''
+    startDate: ''+getTodayDate(),
+    endDate: ''+getTommorowDate(),
  
     // Add more fields as needed
   });
+  const [teamData, setTeamData] = useState(["012 Alpha",
+  "12 Delta",
+  "983 Gamma"]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,8 +38,7 @@ const ProjectForm = () => {
   };
 
   return (
-    <div className="container">
-
+    
 <Paper elevation={3} sx={{ padding: 2, maxWidth: 500,marginLeft:5,
      marginBottom: 10,marginTop:2}}>
 
@@ -90,17 +93,32 @@ const ProjectForm = () => {
           />
         </div>
        
+
+        <div className="form-group">
+          <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              className="txtField"
+              options={teamData}
+              sx={{ width: '80%' }}
+              renderInput={(params) => <TextField {...params} label="Assign Team To Project" />}
+              />
+         </div>
+
+
         <div className="form-group">
           <Button type="submit" variant="contained" color="primary">
            Create Project
           </Button>
         </div>
 
+
+        
        
       </form>
 
       </Paper>
-    </div>
+   
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Paper, TextField } from '@mui/material';
+import { Paper, TextField, Button } from '@mui/material';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -78,9 +78,13 @@ const UserForm = () => {
         </div>
         
 
-       
+        <div className="form-group">
+          <Button type="submit" variant="contained" color="primary">
+           Register
+          </Button>
+        </div>
 
-        <button type="submit" className="btn btn-primary">Register</button>
+    
       </form>
 
       </Paper>

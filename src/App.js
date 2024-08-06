@@ -1,16 +1,18 @@
 
 import './App.css';
+import ProjectForm from './components/ProjectForm';
 import TaskForm from './components/TaskForm';
 import TeamMembers from './components/TeamMembers';
+import UpdateProjectForm from './components/UpdateProjectForm';
 import UserForm from './components/UserForm';
 
 function App() {
   return (
     <div className="App">
       {/* <header className="App-header">
-       <UserForm />
+      <ProjectForm />
       </header> */}
-      <TeamMembers />
+      <UpdateProjectForm />
     </div>
   );
 }
