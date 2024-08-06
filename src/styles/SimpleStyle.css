@@ -1,0 +1,32 @@
+.containerTwoColumn {
+    margin-top: 50px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns with equal width */
+    gap: 20px; /* Gap between columns */
+  }
+
+  .txtField {
+   
+    margin-top: 7px;
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .txtSearch {
+   
+    margin-top: 7px;
+    margin-right: 25%;
+    width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
