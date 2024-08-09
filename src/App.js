@@ -1,19 +1,33 @@
 
 import './App.css';
-import ProjectForm from './components/ProjectForm';
-import TaskForm from './components/TaskForm';
-import TeamMembers from './components/TeamMembers';
-import UpdateProjectForm from './components/UpdateProjectForm';
-import UserForm from './components/UserForm';
+import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import LoginPage from './routes/LoginPage';
+import RegisterPage from './routes/RegisterPage';
+import AdminRoutes from './routes/AdminRoutes';
+import Dashboard from './components/DashBoard';
 
 function App() {
+  const userRole = 'admin';
   return (
-    <div className="App">
-      {/* <header className="App-header">
-      <ProjectForm />
-      </header> */}
-      <UpdateProjectForm />
-    </div>
+    // <div className="App">
+    //   {/* <header className="App-header">
+    //   <ProjectForm />
+    //   </header> */}
+    //   <UserForm />
+    // </div>
+    <Router className="bg-component">
+     
+    <Routes>
+      
+      <Route exact path="/register" element={<RegisterPage />} />
+      <Route exact path="/login" element={<LoginPage />} />
+      {/* <Route path="/" element={<Dashboard />} /> */}
+      {userRole === 'admin' && <Route path="/*" element={<AdminRoutes />} />}
+      {/* <Route path="/admin" element={<Dashboard />} /> */}
+    </Routes>
+  </Router>
+    
   );
 }
 

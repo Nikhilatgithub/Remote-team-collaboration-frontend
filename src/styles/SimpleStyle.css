@@ -20,7 +20,7 @@
     margin-top: 7px;
     margin-left: 10%;
     margin-right: 10%;
-    width: 80%;
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
   }
@@ -28,7 +28,16 @@
   .txtSearch {
    
     margin-top: 7px;
-    margin-right: 25%;
+   
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .txtSearchBar {
+   
+    margin-top: 7px;
+   
     width: 90%;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -36,4 +45,13 @@
 
   .form-group {
     margin-bottom: 10px;
+  }
+
+  .routerItem {
+    
+      display: flex;
+      justify-content: center; /* Horizontally center content */
+      align-items: center; /* Vertically center content */
+      height: 100vh; /* Full viewport height */
+    
   }

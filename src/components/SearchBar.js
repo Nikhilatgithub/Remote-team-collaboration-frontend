@@ -9,7 +9,7 @@ const SearchBar = ({setSearchQuery}) => (
     <Paper>
       <TextField
         id="search-bar"
-        className="txtSearch"
+        className="txtSearchBar"
         onInput={(e) => {
           setSearchQuery(e.target.value);
         }}

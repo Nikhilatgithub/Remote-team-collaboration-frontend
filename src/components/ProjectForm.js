@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Autocomplete, Button, Paper, TextField } from '@mui/material';
+import { Autocomplete, Button, Grid, Paper, TextField } from '@mui/material';
 import { getTodayDate, getTommorowDate } from '../modules/FormData';
-
+import '../styles/SimpleStyle.css';
 const ProjectForm = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -44,8 +44,10 @@ const ProjectForm = () => {
 
       <h2 className="my-4">Start New Project</h2>
       <form onSubmit={handleSubmit}>
-
-      <div className="form-group">
+      <Grid container spacing={2}>
+             
+             <Grid item xs={12}>
+     
           <TextField
             className="txtField"
             label="Project Name"
@@ -55,9 +57,10 @@ const ProjectForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
-
-        <div className="form-group">
+        
+        </Grid>
+              <Grid item xs={12}>
+        
           <TextField
             className="txtField"
             label="Project Description"
@@ -67,9 +70,10 @@ const ProjectForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
-        
-        <div className="form-group">
+      
+        </Grid>
+              <Grid item xs={12}>
+     
           <TextField
             className="txtField"
             label="Start Date"
@@ -79,9 +83,10 @@ const ProjectForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
+       
+        </Grid>
+              <Grid item xs={12}>
         
-        <div className="form-group">
           <TextField
             className="txtField"
             label="End Date"
@@ -91,28 +96,28 @@ const ProjectForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
        
-
-        <div className="form-group">
+       
+        </Grid>
+              <Grid item xs={12}>
+      
           <Autocomplete
               disablePortal
               id="combo-box-demo"
-              className="txtField"
+             
               options={teamData}
-              sx={{ width: '80%' }}
+              sx={{ width: '100%' }}
               renderInput={(params) => <TextField {...params} label="Assign Team To Project" />}
               />
-         </div>
-
-
-        <div className="form-group">
+       
+         </Grid>
+         <Grid item xs={12}>
+        
           <Button type="submit" variant="contained" color="primary">
            Create Project
           </Button>
-        </div>
-
-
+        </Grid>
+        </Grid>
         
        
       </form>

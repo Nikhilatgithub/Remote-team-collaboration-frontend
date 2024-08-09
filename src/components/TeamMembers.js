@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Autocomplete, Avatar, Button, Checkbox, InputLabel, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, MenuItem, Paper, Select, TextField } from '@mui/material';
+import { Autocomplete, Avatar, Button, Checkbox, Grid, InputLabel, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, MenuItem, Paper, Select, TextField } from '@mui/material';
 import '../styles/SimpleStyle.css';
 import SearchBar from './SearchBar';
+import DeleteIcon from '@mui/icons-material/Delete';
 const TeamMembers = () => {
   const [teamData, setTeamData] = useState(["012 Alpha",
   "12 Delta",
@@ -60,15 +61,15 @@ const TeamMembers = () => {
   };
 
   return (
-    <div className="container">
-
+   
 <Paper elevation={3} sx={{ padding: 2, maxWidth: 500,marginLeft:5,
      marginBottom: 10,marginTop:2}}>
 
       <h2 className="my-4">Add Team Members</h2>
       <form onSubmit={handleSubmit}>
 
-      <div className="form-group">
+      <Grid container spacing={2}>
+              <Grid item xs={12}>
     <Autocomplete
         disablePortal
         id="combo-box-demo"
@@ -77,10 +78,8 @@ const TeamMembers = () => {
         sx={{ width: '100%' }}
         renderInput={(params) => <TextField {...params} label="Team Name" />}
         />
-  </div>
-
-
-        <div className="form-group">
+   </Grid>
+              <Grid item xs={12} >
 
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
@@ -115,22 +114,23 @@ const TeamMembers = () => {
         );
       })}
     </List>
-        </div>
+    </Grid>
 
-        
-        
-       
-        <div className="form-group">
+              <Grid item xs={12} >
           <Button type="submit" variant="contained" color="primary">
            Save Team
           </Button>
-        </div>
+          <Button  sx={{ marginLeft: '10px' }} color="error"  variant="contained" startIcon={<DeleteIcon />}>
+            Delete
+          </Button>
+        </Grid>
+      </Grid>
 
        
       </form>
 
       </Paper>
-    </div>
+  
   );
 };
 

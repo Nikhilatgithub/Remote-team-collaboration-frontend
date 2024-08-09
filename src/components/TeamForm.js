@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Paper, TextField } from '@mui/material';
+import { Button, Grid, Paper, TextField } from '@mui/material';
 import '../styles/SimpleStyle.css';
 const TeamForm = () => {
   const [formData, setFormData] = useState({
@@ -33,15 +33,15 @@ const TeamForm = () => {
   };
 
   return (
-    <div className="container">
-
+    
 <Paper elevation={3} sx={{ padding: 2, maxWidth: 500,marginLeft:5,
      marginBottom: 10,marginTop:2}}>
 
       <h2 className="my-4">Create New Team</h2>
       <form onSubmit={handleSubmit}>
-
-      <div className="form-group">
+      <Grid container spacing={2}>
+             
+             <Grid item xs={12}>
           <TextField
             className="txtField"
             label="Team Name"
@@ -51,9 +51,8 @@ const TeamForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
-
-        <div className="form-group">
+          </Grid>
+              <Grid item xs={12}>
           <TextField
             className="txtField"
             label="Team Description"
@@ -63,21 +62,20 @@ const TeamForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
-        
-        
-       
-        <div className="form-group">
+         </Grid>
+              <Grid item xs={12}>
           <Button type="submit" variant="contained" color="primary">
            Create Team
           </Button>
-        </div>
+          </Grid>
+
+              </Grid>
 
        
       </form>
 
       </Paper>
-    </div>
+    
   );
 };
 

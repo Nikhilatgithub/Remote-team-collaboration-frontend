@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Paper, TextField, Button } from '@mui/material';
+import { Paper, TextField, Button, Grid } from '@mui/material';
+import '../styles/SimpleStyle.css';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -33,27 +34,27 @@ const UserForm = () => {
   };
 
   return (
-    <div className="container">
-
+    
 <Paper elevation={3} sx={{ padding: 2, maxWidth: 500,marginLeft:5,
      marginBottom: 10,marginTop:2}}>
 
       <h2 className="my-4">User Registration</h2>
       <form onSubmit={handleSubmit}>
 
-      <div className="form-group">
+      <Grid container spacing={2}>
+             
+             <Grid item xs={12}>
           <TextField
             className="txtField"
-            label="User Name"
+            label="Full Name"
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
           />
-        </div>
-
-        <div className="form-group">
+       </Grid>
+              <Grid item xs={12}>
           <TextField
             className="txtField"
             label="Email Id"
@@ -63,9 +64,8 @@ const UserForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
-        
-        <div className="form-group">
+        </Grid>
+              <Grid item xs={12}>
           <TextField
             className="txtField"
             label="Password"
@@ -75,20 +75,18 @@ const UserForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
-        
-
-        <div className="form-group">
+        </Grid>
+              <Grid item xs={12}>
           <Button type="submit" variant="contained" color="primary">
            Register
           </Button>
-        </div>
-
+          </Grid>
+        </Grid >
     
       </form>
 
       </Paper>
-    </div>
+  
   );
 };
 
