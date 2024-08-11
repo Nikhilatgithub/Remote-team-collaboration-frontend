@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import axios from 'axios'; //  use Axios for HTTP requests
 import { Avatar, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useNavigate } from 'react-router-dom';
 const LoginPage = () => {
 
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const LoginPage = () => {
  
     // Add more fields as needed
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,17 +22,32 @@ const LoginPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('/auth/register', formData)
+
+
+    try {
+      const response = await axios.post('http://localhost:8080/auth/login',formData) 
       .then(response => {
         console.log('User registered successfully:', response.data);
-        // Optionally, redirect or show success message
+        localStorage.setItem('token', response.data.token); // Assuming backend returns a token
+       navigate('/admin');
+       console.log(response.data.token);
+       // Redirect or do something after successful login
       })
       .catch(error => {
         console.error('Error registering user:', error);
         // Handle error appropriately
-      });
+      });;
+
+     
+     
+   
+    } catch (error) {
+      
+      console.error('Login Error:', error);
+    }
+
   };
 
   return (

@@ -22,7 +22,13 @@ const UserForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/users', formData)
+    const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
+    axios.post('http://localhost:8080/admin/tasks', formData,{
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+        'Content-Type': 'application/json'  
+      }
+    })
       .then(response => {
         console.log('User registered successfully:', response.data);
         // Optionally, redirect or show success message

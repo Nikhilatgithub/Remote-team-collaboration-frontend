@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import axios from 'axios'; //  use Axios for HTTP requests
 import { Avatar, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Link, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useNavigate } from 'react-router-dom';
 const RegisterPage = () => {
 
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const RegisterPage = () => {
  
     // Add more fields as needed
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,12 +24,15 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('/auth/register', formData)
+
+    console.log('User registered started:', formData);
+
+   await axios.post('http://localhost:8080/auth/register', formData)
       .then(response => {
         console.log('User registered successfully:', response.data);
-        // Optionally, redirect or show success message
+       navigate('/');
       })
       .catch(error => {
         console.error('Error registering user:', error);
@@ -58,10 +63,10 @@ const RegisterPage = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
+                  name="firstname"
                   required
                   fullWidth
-                  id="firstName"
+                  id="firstname"
                   label="First Name"
                   value={formData.firstname}
                   onChange={handleChange}
@@ -72,9 +77,9 @@ const RegisterPage = () => {
                 <TextField
                   required
                   fullWidth
-                  id="lastName"
+                  id="lastname"
                   label="Last Name"
-                  name="lastName"
+                  name="lastname"
                   autoComplete="family-name"
                   value={formData.lastname}
                   onChange={handleChange}

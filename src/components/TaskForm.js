@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Button, Grid, Paper, TextField } from '@mui/material';
+import { Autocomplete, Button, Grid, Paper, TextField } from '@mui/material';
 import '../styles/SimpleStyle.css';
 import { getTodayDate, getTommorowDate } from '../modules/FormData';
 
@@ -16,6 +16,15 @@ const TaskForm = () => {
     // Add more fields as needed
   });
 
+  const taskStatus = ["Initialize",
+  "Working",
+  "Completed","Review"];
+
+  const taskPriority = ["High",
+  "Medium",
+  "Low"];
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -26,7 +35,13 @@ const TaskForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/users', formData)
+    const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
+    axios.post('http://localhost:8080/admin/tasks', formData,{
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+        'Content-Type': 'application/json'  
+      }
+    })
       .then(response => {
         console.log('User registered successfully:', response.data);
         // Optionally, redirect or show success message
@@ -92,27 +107,46 @@ const TaskForm = () => {
             required
           />
         </Grid>
-              <Grid item xs={12}>
-          <TextField
-            className="txtField"
-            label="Priority"
-            type="text"
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-            required
-          />
+        <Grid item xs={12}>
+        
+        <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        className="txtSearch"
+        name="status"
+        value={formData.status}
+        options={taskStatus}
+        onChange={(event, newValue) => {
+          setFormData(prevState => ({
+            ...prevState,
+            status: newValue
+          }));
+        }}
+        sx={{ width: '100%' }}
+        renderInput={(params) => <TextField {...params} label="Task Status" />}
+        />
+          
+
         </Grid>
+             
               <Grid item xs={12}>
-          <TextField
-            className="txtField"
-            label="Status"
-            type="text"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            required
-          />
+              <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              className="txtSearch"
+              name="priority"
+              value={formData.priority}
+              onChange={(event, newValue) => {
+                setFormData(prevState => ({
+                  ...prevState,
+                  priority: newValue
+                }));
+              }}
+              options={taskPriority}
+              sx={{ width: '100%' }}
+              renderInput={(params) => <TextField {...params} label="Task priority" />}
+              />
+          
        </Grid>
               <Grid item xs={12}>
           <Button type="submit" variant="contained" color="primary">

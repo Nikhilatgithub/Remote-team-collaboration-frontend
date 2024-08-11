@@ -5,7 +5,7 @@ import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './routes/LoginPage';
 import RegisterPage from './routes/RegisterPage';
 import AdminRoutes from './routes/AdminRoutes';
-import Dashboard from './components/DashBoard';
+
 
 function App() {
   const userRole = 'admin';

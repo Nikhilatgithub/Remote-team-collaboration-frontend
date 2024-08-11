@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
-import { Autocomplete, Button, Grid, Paper, TextField } from '@mui/material';
+import { Autocomplete, Button, Grid,   Paper,  TextField } from '@mui/material';
 import { getTodayDate, getTommorowDate } from '../modules/FormData';
 import '../styles/SimpleStyle.css';
 const ProjectForm = () => {
@@ -9,12 +9,17 @@ const ProjectForm = () => {
     description: '',
     startDate: ''+getTodayDate(),
     endDate: ''+getTommorowDate(),
- 
+    status: ''
     // Add more fields as needed
   });
-  const [teamData, setTeamData] = useState(["012 Alpha",
-  "12 Delta",
-  "983 Gamma"]);
+
+  const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
+
+  const [teamData, setTeamData] = useState([]);
+
+  const projectStatus = ["Initialize",
+  "Designing",
+  "Planning","Implementing","Testing","Deployment","Maintainance"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +31,16 @@ const ProjectForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/users', formData)
+
+    console.log('sending data with'+token);
+    console.log(formData);
+    axios.post('http://localhost:8080/manager/projects', formData,{
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+        'Content-Type': 'application/json'
+       
+      }
+    })
       .then(response => {
         console.log('User registered successfully:', response.data);
         // Optionally, redirect or show success message
@@ -36,6 +50,37 @@ const ProjectForm = () => {
         // Handle error appropriately
       });
   };
+
+  const fetchTeams = async () => {
+    try {
+        if (teamData.length === 0) {
+      const response = await axios.get('http://localhost:8080/manager/teams',{
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+          'Content-Type': 'application/json'
+         
+        }
+      });
+      response.data.forEach(element => {
+        console.log(element.id+" "+element.name);
+        setTeamData(prevTeamData => [...prevTeamData, element.id+" "+element.name]);
+      });
+     
+    }
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+ 
+
+  useEffect(() => {
+    if (teamData.length === 0) {
+      fetchTeams();
+    }
+    
+  }, []);
 
   return (
     
@@ -98,6 +143,20 @@ const ProjectForm = () => {
           />
        
        
+        </Grid>
+
+        <Grid item xs={12}>
+        
+        <Autocomplete
+        disablePortal
+        id="combo-box-demo"
+        className="txtSearch"
+        options={projectStatus}
+        sx={{ width: '100%' }}
+        renderInput={(params) => <TextField {...params} label="Project Status" />}
+        />
+          
+
         </Grid>
               <Grid item xs={12}>
       
