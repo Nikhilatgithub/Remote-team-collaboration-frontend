@@ -91,7 +91,7 @@ const UpdateProjectForm = () => {
             required
           />
        </Grid>
-       <Grid item xs={12}>
+       <Grid item xs={12} sm={6}>
           <TextField
             className="txtField"
             label="Start Date"
@@ -102,7 +102,7 @@ const UpdateProjectForm = () => {
             required
           />
        </Grid>
-       <Grid item xs={12}>
+       <Grid item xs={12} sm={6}>
           <TextField
             className="txtField"
             label="End Date"

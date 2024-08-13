@@ -13,14 +13,14 @@ const AdminRoutes = () => {
        <>
        <Dashboard />
         <Routes>
-            <Route path="/create-project" />
+            {/* <Route path="/create-project" />
             <Route path="/update-project"  />
             <Route path="/add-user"  />
             <Route path="/login"  />
             <Route path="/add-task" />
             <Route path="/manage-task"  />
             <Route path="/add-team" />
-            <Route path="/manage-team"  />
+            <Route path="/manage-team"  /> */}
             {/* <Route path="/create-project" element={<ProjectForm />} />
             <Route path="/update-project" element={<UpdateProjectForm />} />
             <Route path="/add-user" element={<UserForm />} /> */}

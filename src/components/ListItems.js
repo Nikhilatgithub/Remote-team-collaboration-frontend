@@ -76,7 +76,7 @@ export const adminListItems = (
         <ListItemText primary="Add new User" />
       </ListItemButton>
 
-      <ListItemButton component={Link} to="/add-user">
+      <ListItemButton component={Link} to="/update-user">
         <ListItemIcon>
           <ManageAccountsIcon />
         </ListItemIcon>
@@ -109,6 +109,94 @@ export const adminListItems = (
           <GroupsIcon />
         </ListItemIcon>
         <ListItemText primary="Manage Team" />
+      </ListItemButton>
+
+    </React.Fragment>
+  );
+  
+  export const managerListItems = (
+    <React.Fragment>
+      <ListItemButton >
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to='/create-project'>
+        <ListItemIcon>
+          <AddCircleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Create new Project" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to='/update-project'>
+        <ListItemIcon>
+        <AssignmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="Manage Project" />
+      </ListItemButton>
+
+     
+      <ListItemButton component={Link} to="/add-task">
+        <ListItemIcon>
+          <AddTaskIcon />
+        </ListItemIcon>
+        <ListItemText primary="Create new Task" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to="/manage-task">
+        <ListItemIcon>
+          <TaskAltIcon />
+        </ListItemIcon>
+        <ListItemText primary="Manage Task" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to="/add-team">
+        <ListItemIcon>
+          <GroupsIcon />
+        </ListItemIcon>
+        <ListItemText primary="Create new Team" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to="/manage-team" >
+        <ListItemIcon>
+          <GroupsIcon />
+        </ListItemIcon>
+        <ListItemText primary="Manage Team" />
+      </ListItemButton>
+
+    </React.Fragment>
+  );
+  
+  export const employeeListItems = (
+    <React.Fragment>
+      <ListItemButton >
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to='/view-mytasks'>
+        <ListItemIcon>
+          <AddCircleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Tasks Board" />
+      </ListItemButton>
+
+      <ListItemButton component={Link} to='/view-myproject'>
+        <ListItemIcon>
+          <AddCircleIcon />
+        </ListItemIcon>
+        <ListItemText primary="My Project" />
+      </ListItemButton>
+     
+      <ListItemButton component={Link} to='/view-myteam'>
+        <ListItemIcon>
+          <AddCircleIcon />
+        </ListItemIcon>
+        <ListItemText primary="My Team" />
       </ListItemButton>
 
     </React.Fragment>

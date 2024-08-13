@@ -18,7 +18,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { adminListItems, secondaryListItems } from './ListItems';
+import { adminListItems, employeeListItems, managerListItems, secondaryListItems } from './ListItems';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProjectForm from './ProjectForm';
 import UpdateProjectForm from './UpdateProjectForm';
@@ -29,17 +29,18 @@ import TeamForm from './TeamForm';
 
 
 import "../styles/SimpleStyle.css"
+import UpdateUserForm from './UpdateUserForm';
+import UpdateTaskForm from './UpdateTaskForm';
+import ManagerDashboard from '../routes/ManagerDashboard';
+import AdminDashboard from '../routes/AdminDashboard';
+import EmployeeDashboard from '../routes/EmployeeDashboard';
 
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
+      {'Developed by Nikhil Kasab and Bhushan Nagpure'}
+     
     </Typography>
   );
 }
@@ -90,6 +91,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
@@ -128,7 +130,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-             Admin Dashboard
+            {userRole} Dashboard
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -152,7 +154,16 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {adminListItems}
+            {/* {(userRole=="admin")?adminListItems:managerListItems} */}
+            {userRole === 'admin' ? (
+                      adminListItems
+                    ) : userRole === 'manager' ? (
+                      managerListItems
+                    ) : userRole === 'employee' ? (
+                      employeeListItems
+                    ) : (
+                      <div><>Unauthorized Access</></div>
+                    )}
             <Divider sx={{ my: 1 }} />
             {secondaryListItems}
           </List>
@@ -178,7 +189,7 @@ export default function Dashboard() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <Paper sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
                   {/* <Paper sx={{ 
                     p: 2, 
                     display: 'flex', 
@@ -189,16 +200,16 @@ export default function Dashboard() {
                     minWidth: '100%'
                   }}> */}
                   <div className='routerItem'>
-                  <Routes> 
-                    <Route path="/create-project" element={<ProjectForm />} />
-                    <Route path="/update-project" element={<UpdateProjectForm />} />
-                    <Route path="/add-user" element={<UserForm />} />
-                    <Route path="/add-task" element={<TaskForm />} />
-                    <Route path="/manage-task" element={<TaskForm />} />
-                    <Route path="/add-team" element={<TeamForm />} />
-                    <Route path="/manage-team" element={<TeamMember />} />
-                    {/* Add more admin-specific routes as needed */}
-                </Routes>
+                  {userRole === 'admin' ? (
+                      <AdminDashboard />
+                    ) : userRole === 'manager' ? (
+                      <ManagerDashboard />
+                    ) : userRole === 'employee' ? (
+                      <EmployeeDashboard />
+                    ) : (
+                      <div><>Unauthorized Access</></div>
+                    )}
+               
                 </div>
                   </Paper>
                 </Grid>
@@ -206,21 +217,21 @@ export default function Dashboard() {
             
             </Container>
 
-          {/* <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
               <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 50,
                   }}
                 >
-               
+               <Copyright />
            
                 </Paper>
               </Grid>
-          </Container> */}
+          </Container>
                 </Box> 
       </Box>
     </ThemeProvider>

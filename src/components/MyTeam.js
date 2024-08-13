@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // use Axios for HTTP requests
-import { Autocomplete, Avatar, Button, Checkbox, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Paper, TextField } from '@mui/material';
+import { Autocomplete, Avatar, Button, Checkbox, Grid, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Paper, TextField, Typography } from '@mui/material';
 import '../styles/SimpleStyle.css';
 import SearchBar from './SearchBar';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const TeamMembers = () => {
+const MyTeam = () => {
   const [teamData, setTeamData] = useState(["012 Alpha", "12 Delta", "983 Gamma"]);
   const [teamMembers, setTeamMembers] = useState([
     "Paris", "London", "New York", "Tokyo", "Berlin",
@@ -75,53 +75,23 @@ const TeamMembers = () => {
 
   return (
     <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
-      {/* Project Select List on the Left Side */}
-      <Grid item xs={12} sm={4}>
-        <Paper elevation={3} sx={{ padding: 2, height: { xs: 'auto', sm: '100%' }, maxHeight: { sm: 600 }, overflow: 'auto', marginBottom: { xs: 2, sm: 0 } }}>
-          <h2 className="my-4" >Select Team</h2>
-          <SearchBar searchQuery={searchTeamQuery} setSearchQuery={setSearchTeamQuery} />
-          <List dense sx={{ width: '100%', maxWidth: '100%', position: 'relative', maxHeight: 400, overflow: 'auto', bgcolor: 'background.paper' }}>
-            {dataTeamFiltered.map((team, index) => (
-              <ListItem key={index} disablePadding onClick={() => console.log(`Selected team: ${team}`)}>
-                <ListItemButton>
-                  <ListItemAvatar>
-                    <Avatar alt={`Avatar n°${index + 1}`} src={`/static/images/avatar/${index + 1}.jpg`} />
-                  </ListItemAvatar>
-                  <ListItemText primary={team} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-      </Grid>
-
-      {/* Form on the Right Side */}
-      <Grid item xs={12} sm={8}>
+      
+      <Grid item xs={12} >
         <Paper elevation={3} sx={{ padding: 2 }}>
-          <h2 className="my-4">Add Team Members</h2>
+          <h2 className="my-4">My Team Members</h2>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
             <Grid item xs={12}>
-          <TextField
-            className="txtField"
-            label="Team Name"
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+          
           </Grid>
               <Grid item xs={12}>
-          <TextField
-            className="txtField"
-            label="Team Description"
-            type="text"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
+              <Typography >
+               Team {formData.name}
+             </Typography>
+             <Typography >
+               Description {formData.description}
+             </Typography>
+          
          </Grid>
               <Grid item xs={12}>
                 <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
@@ -131,14 +101,7 @@ const TeamMembers = () => {
                     return (
                       <ListItem
                         key={value}
-                        secondaryAction={
-                          <Checkbox
-                            edge="end"
-                            onChange={handleToggle(value)}
-                            checked={checked.indexOf(value) !== -1}
-                            inputProps={{ 'aria-labelledby': labelId }}
-                          />
-                        }
+                       
                         disablePadding
                       >
                         <ListItemButton>
@@ -153,14 +116,7 @@ const TeamMembers = () => {
                 </List>
               </Grid>
 
-              <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary">
-                  Save Team
-                </Button>
-                <Button sx={{ marginLeft: '10px' }} color="error" variant="contained" startIcon={<DeleteIcon />}>
-                  Delete
-                </Button>
-              </Grid>
+             
             </Grid>
           </form>
         </Paper>
@@ -169,4 +125,4 @@ const TeamMembers = () => {
   );
 };
 
-export default TeamMembers;
+export default MyTeam;
