@@ -32,6 +32,66 @@ export const fetchTeams = async () => {
   }
 };
 
+export const createProject = async (formData) => {
+    try {
+      const response = await apiClient.post('/manager/projects', formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating project:', error);
+      throw error;
+    }
+  };
+
+  export const updateProject = async (formData,id) => {
+    try {
+      const response = await apiClient.put('/admin/projects/'+id, formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating project:', error);
+      throw error;
+    }
+  };
+
+  export const fetchProject = async () => {
+    try {
+      const response = await apiClient.get('/admin/projects');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      throw error;
+    }
+  };
+
+  export const deleteProject = async (projectId) => {
+    try {
+      const response = await apiClient.delete(`/admin/projects/${projectId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      throw error;
+    }
+  };
 // Add more functions to handle other API requests as needed
 
+// user related crud opration
+
+export const createUser = async (formData) => {
+    try {
+      const response = await apiClient.post('/admin/users', formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  };
+
+  export const fetchUsers = async () => {
+    try {
+      const response = await apiClient.get('/admin/users');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
+  };
 export default apiClient;

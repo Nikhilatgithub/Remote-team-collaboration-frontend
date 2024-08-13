@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // use Axios for HTTP requests
 import { Paper, TextField, Button, Grid, Autocomplete, List, ListItemAvatar, ListItemButton, ListItemText, Avatar, ListItem } from '@mui/material';
 import '../styles/SimpleStyle.css';
 import SearchBar from './SearchBar';
+import { fetchUsers, setAuthToken } from '../services/AdminService';
 
 const UpdateUserForm = () => {
   const [formData, setFormData] = useState({
@@ -10,19 +11,24 @@ const UpdateUserForm = () => {
     lastname: '',
     email: '',
     password: '',
+    status: '',
+    jobTitle: '',
+    roleId: '',
+    teamId: ''
   });
 
   const [teamData, setTeamData] = useState([]);
-  const [userList, setUserList] = useState([
-    "Paris", "London", "New York", "Tokyo", "Berlin",
-    "Buenos Aires", "Cairo", "Canberra", "Rio de Janeiro", "Dublin"
-  ]);
+  const [userList, setUserList] = useState([]);
+  const [usersData, setUsersData] = useState([]);
+  const [userId, setUserId] = useState();
+  const [selectedTeam, setTeam] = useState("");
 
   const userStatus = ["Available", "Away", "Do not Disturb", "Busy", "On Leave"];
   const jobTitile = ["Project Manager", "Developer", "Tester", "Supporter"];
   const userRole = ["ADMIN", "MANAGER", "EMPLOYEE"];
 
   const [searchQuery, setSearchQuery] = useState("");
+  const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
 
   const filterData = (query, data) => {
     if (!query) {
@@ -61,6 +67,54 @@ const UpdateUserForm = () => {
       });
   };
 
+  const handleIdChange = (event, value) => { 
+    try{
+      console.log(value);
+      const numberStr = value.split(' ')[0];
+      const number = parseInt(numberStr, 10);
+      
+       const user=usersData.find(proj => proj.id === number);
+       setFormData( ({
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        password: '',
+        status: user.status,
+        jobTitle: user.jobTitle,
+        roleId: user.roleId,
+        teamId: user.teamId
+       }));
+      setTeam(user.teamId+" "+user.teamName);
+      setUserId(number);
+    }
+    catch(error)
+    {
+  
+    }
+     
+  
+    };
+
+  useEffect(() => {
+    setAuthToken(token); // Set the auth token before making requests
+
+    const loadTeams = async () => {
+      try {
+        const users = await fetchUsers();
+        setUsersData(users);
+        setUserList(users.map(user => `${user.id} ${user.firstname} ${user.lastname}`));
+      } catch (error) {
+        console.error('Failed to load users:', error);
+      }
+    };
+
+    
+
+    loadTeams();
+   
+  }, [token]);
+
+
   return (
     <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
     {/* User List on the Left Side */}
@@ -70,7 +124,29 @@ const UpdateUserForm = () => {
           <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           <List dense sx={{ width: '100%', maxWidth: '100%', position: 'relative', maxHeight: 400, overflow: 'auto', bgcolor: 'background.paper' }}>
             {dataFiltered.map((value, index) => (
-              <ListItem key={index} disablePadding onClick={() => setFormData(prevState => ({ ...prevState, firstname: value }))}>
+              <ListItem key={index} disablePadding onClick={()=>{try{
+                console.log(value);
+                const numberStr = value.split(' ')[0];
+                const number = parseInt(numberStr, 10);
+                
+                 const user=usersData.find(proj => proj.id === number);
+                 setFormData( ({
+                  firstname: user.firstname,
+                  lastname: user.lastname,
+                  email: user.email,
+                  password: '',
+                  status: user.status,
+                  jobTitle: user.jobTitle,
+                  roleId: user.roleId,
+                  teamId: user.teamId
+                 }));
+                setTeam(user.teamId+" "+user.teamName);
+                setUserId(number);
+              }
+              catch(error)
+              {
+            
+              }}}>
                 <ListItemButton>
                   <ListItemAvatar>
                     <Avatar alt={`Avatar n°${index + 1}`} src={`/static/images/avatar/${index + 1}.jpg`} />
@@ -157,6 +233,7 @@ const UpdateUserForm = () => {
                 <Autocomplete
                   disablePortal
                   id="user-team"
+                  value={selectedTeam}
                   options={teamData}
                   renderInput={(params) => <TextField {...params} label="Assign Team To User" fullWidth />}
                 />

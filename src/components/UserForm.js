@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
 import { Paper, TextField, Button, Grid, Autocomplete } from '@mui/material';
 import '../styles/SimpleStyle.css';
+import { createUser, fetchTeams, setAuthToken } from '../services/AdminService';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -9,11 +10,15 @@ const UserForm = () => {
     lastname: '',
     email: '',
     password: '',
- 
+    status: '',
+    jobTitle: '',
+    roleId: '',
+    teamId: ''
     // Add more fields as needed
   });
 
   const [teamData, setTeamData] = useState([]);
+  const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
 
   const userStatus = ["Available",
   "Away",
@@ -36,24 +41,35 @@ const UserForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
-    axios.post('http://localhost:8080/admin/tasks', formData,{
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
-        'Content-Type': 'application/json'  
-      }
-    })
-      .then(response => {
-        console.log('User registered successfully:', response.data);
-        // Optionally, redirect or show success message
-      })
-      .catch(error => {
-        console.error('Error registering user:', error);
-        // Handle error appropriately
-      });
+    
+    setAuthToken(token);
+    try {
+      const response = await createUser(formData);
+      console.log('User created successfully:', response);
+      // Optionally, redirect or show success message
+    } catch (error) {
+      console.error('Error creating User:', error);
+      // Handle error appropriately
+    }
   };
+
+  useEffect(() => {
+    setAuthToken(token); // Set the auth token before making requests
+
+    const loadTeams = async () => {
+      try {
+        const teams = await fetchTeams();
+        setTeamData(teams.map(team => `${team.id} ${team.name}`));
+      } catch (error) {
+        console.error('Failed to load teams:', error);
+      }
+    };
+
+    loadTeams();
+  }, [token]);
+
 
   return (
     
@@ -114,8 +130,14 @@ const UserForm = () => {
         
         <Autocomplete
         disablePortal
-        id="combo-box-demo"
+        id="combo-box-status"
         className="txtSearch"
+        onChange={(event, newValue) => {
+          setFormData(prevState => ({
+            ...prevState,
+            status: newValue
+          }));
+        }}
         options={userStatus}
         sx={{ width: '100%' }}
         renderInput={(params) => <TextField {...params} label="User Status" />}
@@ -126,8 +148,14 @@ const UserForm = () => {
         <Grid item xs={12} sm={6}>
         <Autocomplete
         disablePortal
-        id="combo-box-demo"
+        id="combo-box-jobTitle"
         className="txtSearch"
+        onChange={(event, newValue) => {
+          setFormData(prevState => ({
+            ...prevState,
+            jobTitle: newValue
+          }));
+        }}
         options={jobTitile}
         sx={{ width: '100%' }}
         renderInput={(params) => <TextField {...params} label="User Job Title" />}
@@ -139,8 +167,22 @@ const UserForm = () => {
       
       <Autocomplete
           disablePortal
-          id="combo-box-demo"
-         
+          id="combo-box-teamId"
+          onChange={(event, newValue) => {
+            try{
+              const numberStr = newValue.split(' ')[0];
+              const number = parseInt(numberStr, 10);
+              setFormData(prevState => ({
+                ...prevState,
+                teamId: number
+              }));
+            }
+            catch(error)
+            {
+
+            }
+            
+          }}
           options={teamData}
           sx={{ width: '100%' }}
           renderInput={(params) => <TextField {...params} label="Assign Team To User" />}
@@ -151,8 +193,19 @@ const UserForm = () => {
       
       <Autocomplete
           disablePortal
-          id="combo-box-demo"
-         
+          id="combo-box-roleId"
+          onChange={(event, newValue) => {
+            let id = 3;
+            if(newValue==="ADMIN")
+             id=1;
+            else if(newValue==="MANAGER")
+             id=2;
+            setFormData(prevState => ({
+              ...prevState,
+              roleId: id
+            }));
+          }}
+          required
           options={userRole}
           sx={{ width: '100%' }}
           renderInput={(params) => <TextField {...params} label="Assign Role To User" />}

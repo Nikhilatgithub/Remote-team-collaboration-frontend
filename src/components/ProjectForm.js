@@ -3,13 +3,16 @@ import axios from 'axios'; //  use Axios for HTTP requests
 import { Autocomplete, Button, Grid,   Paper,  TextField } from '@mui/material';
 import { getTodayDate, getTommorowDate } from '../modules/FormData';
 import '../styles/SimpleStyle.css';
+import { createProject, setAuthToken, fetchTeams } from '../services/AdminService';
+
 const ProjectForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     startDate: ''+getTodayDate(),
     endDate: ''+getTommorowDate(),
-    status: ''
+    status: '',
+    teamId: null
     // Add more fields as needed
   });
 
@@ -29,58 +32,67 @@ const ProjectForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('sending data with'+token);
-    console.log(formData);
-    axios.post('http://localhost:8080/manager/projects', formData,{
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
-        'Content-Type': 'application/json'
-       
-      }
-    })
-      .then(response => {
-        console.log('User registered successfully:', response.data);
-        // Optionally, redirect or show success message
-      })
-      .catch(error => {
-        console.error('Error registering user:', error);
-        // Handle error appropriately
-      });
-  };
+    setAuthToken(token); // Set the auth token before making requests
 
-  const fetchTeams = async () => {
     try {
-        if (teamData.length === 0) {
-      const response = await axios.get('http://localhost:8080/manager/teams',{
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
-          'Content-Type': 'application/json'
-         
-        }
-      });
-      response.data.forEach(element => {
-        console.log(element.id+" "+element.name);
-        setTeamData(prevTeamData => [...prevTeamData, element.id+" "+element.name]);
-      });
-     
-    }
-    
+      console.log('Sending data with', token);
+      console.log(formData);
+
+      const response = await createProject(formData);
+      console.log('Project created successfully:', response);
+      // Optionally, redirect or show success message
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error creating project:', error);
+      // Handle error appropriately
     }
   };
 
- 
+  // const fetchTeams = async () => {
+  //   try {
+  //       if (teamData.length === 0) {
+  //     const response = await axios.get('http://localhost:8080/manager/teams',{
+  //       headers: {
+  //         Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+  //         'Content-Type': 'application/json'
+         
+  //       }
+  //     });
+  //     response.data.forEach(element => {
+  //       console.log(element.id+" "+element.name);
+  //       setTeamData(prevTeamData => [...prevTeamData, element.id+" "+element.name]);
+  //     });
+     
+  //   }
+    
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // };
 
   useEffect(() => {
-    if (teamData.length === 0) {
-      fetchTeams();
-    }
+    setAuthToken(token); // Set the auth token before making requests
+
+    const loadTeams = async () => {
+      try {
+        const teams = await fetchTeams();
+        setTeamData(teams.map(team => `${team.id} ${team.name}`));
+      } catch (error) {
+        console.error('Failed to load teams:', error);
+      }
+    };
+
+    loadTeams();
+  }, [token]);
+
+  // useEffect(() => {
+  //   if (teamData.length === 0) {
+  //     fetchTeams();
+  //   }
     
-  }, []);
+  // }, []);
 
   return (
     
@@ -151,6 +163,12 @@ const ProjectForm = () => {
         disablePortal
         id="combo-box-demo"
         className="txtSearch"
+        onChange={(event, newValue) => {
+          setFormData(prevState => ({
+            ...prevState,
+            status: newValue
+          }));
+        }}
         options={projectStatus}
         sx={{ width: '100%' }}
         renderInput={(params) => <TextField {...params} label="Project Status" />}
@@ -163,7 +181,21 @@ const ProjectForm = () => {
           <Autocomplete
               disablePortal
               id="combo-box-demo"
-             
+              onChange={(event, newValue) => {
+                try{
+                  const numberStr = newValue.split(' ')[0];
+                  const number = parseInt(numberStr, 10);
+                  setFormData(prevState => ({
+                    ...prevState,
+                    teamId: number
+                  }));
+                }
+                catch(error)
+                {
+
+                }
+                
+              }}
               options={teamData}
               sx={{ width: '100%' }}
               renderInput={(params) => <TextField {...params} label="Assign Team To Project" />}
