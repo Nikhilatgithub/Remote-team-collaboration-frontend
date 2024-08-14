@@ -94,4 +94,66 @@ export const createUser = async (formData) => {
       throw error;
     }
   };
+
+  export const updateUsers = async (userId,formData) => {
+    try {
+      const response = await apiClient.put(`/admin/users/${userId}`,formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updatrinf users:', error);
+      throw error;
+    }
+  };
+
+  export const deleteUser = async (userId) => {
+    try {
+      const response = await apiClient.delete(`/admin/users/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  };
+
+  // task related crud oparations
+
+  export const createTask = async (formData) => {
+    try {
+      const response = await apiClient.post('/admin/tasks', formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating tasks:', error);
+      throw error;
+    }
+  };
+
+  export const fetchTask = async () => {
+    try {
+      const response = await apiClient.get('/admin/tasks');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      throw error;
+    }
+  };
+
+  export const updateTask = async (taskId,formData) => {
+    try {
+      const response = await apiClient.put(`/admin/tasks/${taskId}`,formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updatrinf tasks:', error);
+      throw error;
+    }
+  };
+
+  export const deleteTask = async (taskId) => {
+    try {
+      const response = await apiClient.delete(`/admin/tasks/${taskId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting tasks:', error);
+      throw error;
+    }
+  };
 export default apiClient;

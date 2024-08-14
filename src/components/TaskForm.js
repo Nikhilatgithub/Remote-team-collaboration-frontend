@@ -1,29 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios'; //  use Axios for HTTP requests
 import { Autocomplete, Button, Grid, Paper, TextField, List, ListItem, ListItemText, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import '../styles/SimpleStyle.css';
 import { getTodayDate, getTommorowDate } from '../modules/FormData';
+import { createTask, fetchProject, fetchTeams, fetchUsers, setAuthToken } from '../services/AdminService';
 
 const TaskForm = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     startDate: '' + getTodayDate(),
-    endDate: '' + getTommorowDate(),
+    dueDate: '' + getTommorowDate(),
     status: '',
-    priority: ''
+    priority: '',
+    assignedToUserId: '',
+    projectId: ''
   });
-  const [userList, setUserList] = useState([
-    "Paris", "London", "New York", "Tokyo", "Berlin",
-    "Buenos Aires", "Cairo", "Canberra", "Rio de Janeiro", "Dublin"
-  ]);
+  const [userList, setUserList] = useState([]);
   const taskStatus = ["Initialize", "Working", "Completed", "Review"];
   const taskPriority = ["High", "Medium", "Low"];
-  const [projects, setProjects] = useState([
-    'Project Alpha', 'Project Beta', 'Project Gamma', 'Project Delta'
-  ]);
+
   const [searchQuery, setSearchQuery] = useState('');
+  const [projectList, setProjectList] = useState([]);
+  const [projectData, setProjectData] = useState([]);
+
+  
+  let teamId=0;
+  
+  const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,38 +39,84 @@ const TaskForm = () => {
   };
 
   const handleIdChange = (event, value) => {
-    const data=String(value).split(" ");
-     setFormData(prevState => ({
-       ...prevState,
-      name: ''+data[1],
-     description: 'hi this is demo',
-     startDate: ''+getTodayDate(),
-     endDate: ''+getTommorowDate(),
-     }));
+    try{
+      const data=String(value).split(" ");
+      const number = parseInt(data[0], 10);
+      setFormData(prevState => ({
+        ...prevState,
+        assignedToUserId: number,
+      }));
+    }
+    catch(error)
+    {}
+   
    };
 
-  const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
-    axios.post('http://localhost:8080/admin/tasks', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        console.log('User registered successfully:', response.data);
-        // Optionally, redirect or show success message
-      })
-      .catch(error => {
-        console.error('Error registering user:', error);
-        // Handle error appropriately
-      });
+
+    setAuthToken(token); // Set the auth token before making requests
+
+    try {
+      console.log('Sending data with', token);
+      console.log(formData);
+
+      const response = await createTask(formData);
+      console.log('task created successfully:', response);
+      
+      // Optionally, redirect or show success message
+    } catch (error) {
+      console.error('Error updating User:', error);
+      // Handle error appropriately
+    }
   };
 
-  const filteredProjects = projects.filter(project =>
+  const filteredProjects = projectData.filter(project =>
     project.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const loadUsers = async (projectListname) => {
+    try {
+      const numberStr = projectListname.split(' ')[0];
+      const number = parseInt(numberStr, 10);
+      projectList.forEach(project => {if(project.id===number){teamId=project.teamId}});
+      setAuthToken(token);
+      console.log(teamId);
+      const users = await fetchUsers();
+      setFormData(prevState => ({
+        ...prevState,
+        projectId: number,
+      }));
+      setUserList(
+        users
+          .filter(user => user.teamId === teamId) // Filter users by teamId
+          .map(user => `${user.id} ${user.firstname} ${user.lastname}`) // Map the filtered users to the desired string format
+      );
+      
+      // setUserList(users.map(user =>{if(user.teamId===teamId){ `${user.id} ${user.firstname} ${user.lastname}`}}));
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  };
+
+  useEffect(() => {
+    setAuthToken(token); // Set the auth token before making requests
+    const loadProjects = async () => {
+      try {
+        const projects = await fetchProject();
+        setProjectList(projects);
+        console.log(projects);
+        setProjectData(projects.map(project => `${project.id} ${project.name}`));
+      } catch (error) {
+        console.error('Failed to load teams:', error);
+      }
+    };
+
+   // loadUsers();
+    loadProjects();
+  }, [token]);
+
+
 
   return (
     <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -92,9 +143,9 @@ const TaskForm = () => {
             }}
           />
           <List>
-            {filteredProjects.map((project, index) => (
-              <ListItem button key={index}>
-                <ListItemText primary={project} />
+            {filteredProjects.map((projectList, index) => (
+              <ListItem button key={index} onClick={() => loadUsers(projectList)}>
+                <ListItemText primary={projectList} />
               </ListItem>
             ))}
           </List>
@@ -160,8 +211,8 @@ const TaskForm = () => {
                   className="txtField"
                   label="End Date"
                   type="date"
-                  name="endDate"
-                  value={formData.endDate}
+                  name="dueDate"
+                  value={formData.dueDate}
                   onChange={handleChange}
                   required
                   fullWidth

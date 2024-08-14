@@ -126,6 +126,7 @@ const UpdateProjectForm = () => {
     
 <Paper elevation={3} sx={{ padding: 2, maxWidth: 500,marginLeft:5,
      marginBottom: 10,marginTop:2}}>
+      
 
       <h2 className="my-4">Manage Project</h2>
       <form onSubmit={handleSubmit}>

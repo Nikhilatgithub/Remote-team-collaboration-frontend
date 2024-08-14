@@ -3,7 +3,8 @@ import axios from 'axios'; // use Axios for HTTP requests
 import { Paper, TextField, Button, Grid, Autocomplete, List, ListItemAvatar, ListItemButton, ListItemText, Avatar, ListItem } from '@mui/material';
 import '../styles/SimpleStyle.css';
 import SearchBar from './SearchBar';
-import { fetchUsers, setAuthToken } from '../services/AdminService';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteUser, fetchTeams, fetchUsers, setAuthToken, updateUsers } from '../services/AdminService';
 
 const UpdateUserForm = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +23,7 @@ const UpdateUserForm = () => {
   const [usersData, setUsersData] = useState([]);
   const [userId, setUserId] = useState();
   const [selectedTeam, setTeam] = useState("");
+  const [selectedRole, setRole] = useState("");
 
   const userStatus = ["Available", "Away", "Do not Disturb", "Busy", "On Leave"];
   const jobTitile = ["Project Manager", "Developer", "Tester", "Supporter"];
@@ -48,69 +50,83 @@ const UpdateUserForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
-    axios.post('http://localhost:8080/admin/tasks', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        console.log('User registered successfully:', response.data);
-        // Optionally, redirect or show success message
-      })
-      .catch(error => {
-        console.error('Error registering user:', error);
-        // Handle error appropriately
-      });
+
+    setAuthToken(token); // Set the auth token before making requests
+
+    try {
+      console.log('Sending data with', token);
+      console.log(formData);
+
+      const response = await updateUsers(userId,formData);
+      console.log('User updated successfully:', response);
+      loadUsers();
+      // Optionally, redirect or show success message
+    } catch (error) {
+      console.error('Error updating User:', error);
+      // Handle error appropriately
+    }
   };
 
-  const handleIdChange = (event, value) => { 
-    try{
-      console.log(value);
-      const numberStr = value.split(' ')[0];
-      const number = parseInt(numberStr, 10);
-      
-       const user=usersData.find(proj => proj.id === number);
-       setFormData( ({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        password: '',
-        status: user.status,
-        jobTitle: user.jobTitle,
-        roleId: user.roleId,
-        teamId: user.teamId
-       }));
-      setTeam(user.teamId+" "+user.teamName);
-      setUserId(number);
-    }
-    catch(error)
-    {
-  
-    }
-     
-  
-    };
+  const handleDelete = async (e) => {
+    e.preventDefault();
 
+    setAuthToken(token); // Set the auth token before making requests
+
+    try {
+      console.log('Sending data with', token);
+      console.log(formData);
+
+      const response = await deleteUser(userId);
+      console.log('User deleted successfully:', response);
+      loadUsers();
+      // Optionally, redirect or show success message
+    } catch (error) {
+      console.error('Error deleting User:', error);
+      // Handle error appropriately
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      const users = await fetchUsers();
+      setUsersData(users);
+      setUserList(users.map(user => `${user.id} ${user.firstname} ${user.lastname}`));
+      setFormData( ({
+        firstname: '',
+        lastname: '',
+        email: '',
+        password: '',
+        status: '',
+        jobTitle: '',
+        roleId: '',
+        teamId: ''
+       }));
+       setTeam("");
+       setRole("");
+    } catch (error) {
+      console.error('Failed to load users:', error);
+    }
+  };
+ 
   useEffect(() => {
     setAuthToken(token); // Set the auth token before making requests
 
+   
+
     const loadTeams = async () => {
       try {
-        const users = await fetchUsers();
-        setUsersData(users);
-        setUserList(users.map(user => `${user.id} ${user.firstname} ${user.lastname}`));
+        const teams = await fetchTeams();
+        setTeamData(teams.map(team => `${team.id} ${team.name}`));
       } catch (error) {
-        console.error('Failed to load users:', error);
+        console.error('Failed to load teams:', error);
       }
     };
 
-    
-
     loadTeams();
+
+    loadUsers();
    
   }, [token]);
 
@@ -130,6 +146,7 @@ const UpdateUserForm = () => {
                 const number = parseInt(numberStr, 10);
                 
                  const user=usersData.find(proj => proj.id === number);
+                 setUserId(number);
                  setFormData( ({
                   firstname: user.firstname,
                   lastname: user.lastname,
@@ -141,7 +158,10 @@ const UpdateUserForm = () => {
                   teamId: user.teamId
                  }));
                 setTeam(user.teamId+" "+user.teamName);
-                setUserId(number);
+                console.log(user.roleName);
+                setRole(user.roleName);
+               
+               
               }
               catch(error)
               {
@@ -201,7 +221,7 @@ const UpdateUserForm = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   className="txtField"
                   label="Password"
@@ -212,11 +232,18 @@ const UpdateUserForm = () => {
                   fullWidth
                   required
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   disablePortal
                   id="user-status"
+                  onChange={(event, newValue) => {
+                    setFormData(prevState => ({
+                      ...prevState,
+                      status: newValue
+                    }));
+                  }}
+                  value={formData.status}
                   options={userStatus}
                   renderInput={(params) => <TextField {...params} label="User Status" fullWidth />}
                 />
@@ -225,6 +252,13 @@ const UpdateUserForm = () => {
                 <Autocomplete
                   disablePortal
                   id="user-job-title"
+                  onChange={(event, newValue) => {
+                    setFormData(prevState => ({
+                      ...prevState,
+                      jobTitle: newValue
+                    }));
+                  }}
+                  value={formData.jobTitle}
                   options={jobTitile}
                   renderInput={(params) => <TextField {...params} label="User Job Title" fullWidth />}
                 />
@@ -234,6 +268,22 @@ const UpdateUserForm = () => {
                   disablePortal
                   id="user-team"
                   value={selectedTeam}
+                  onChange={(event, newValue) => {
+                    try{
+                      const numberStr = newValue.split(' ')[0];
+                      const number = parseInt(numberStr, 10);
+                      setFormData(prevState => ({
+                        ...prevState,
+                        teamId: number
+                      }));
+                    }
+                    catch(error)
+                    {
+        
+                    }
+                    
+                  }}
+                 
                   options={teamData}
                   renderInput={(params) => <TextField {...params} label="Assign Team To User" fullWidth />}
                 />
@@ -243,12 +293,31 @@ const UpdateUserForm = () => {
                   disablePortal
                   id="user-role"
                   options={userRole}
+                  onChange={(event, newValue) => {
+                    try{
+                      let id = 3;
+                      if(newValue==="ADMIN")
+                       id=1;
+                      else if(newValue==="MANAGER")
+                       id=2;
+                      setFormData(prevState => ({
+                        ...prevState,
+                        roleId: id
+                      }));
+                    }
+                    catch(error){}
+              
+                  }}
+                  value={selectedRole}
                   renderInput={(params) => <TextField {...params} label="Assign Role To User" fullWidth />}
                 />
               </Grid>
               <Grid item xs={12}>
                 <Button type="submit" variant="contained" color="primary">
-                  Register
+                  Save
+                </Button>
+                <Button onClick={handleDelete} sx={{ marginLeft: '10px' }} color="error"  variant="contained" startIcon={<DeleteIcon />}>
+                  Delete
                 </Button>
               </Grid>
             </Grid>
