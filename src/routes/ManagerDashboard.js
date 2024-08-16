@@ -11,6 +11,8 @@ import TaskForm from '../components/TaskForm';
 import UpdateTaskForm from '../components/UpdateTaskForm';
 import TeamForm from '../components/TeamForm';
 import TeamMembers from '../components/TeamMembers';
+import EmployeeProfile from '../components/EmployeeProfile';
+import ChatPage from '../components/ChatPage';
 
 const ManagerDashboard = () => {
     return (
@@ -21,7 +23,8 @@ const ManagerDashboard = () => {
         <Route path="/manage-task" element={<UpdateTaskForm />} />
         <Route path="/add-team" element={<TeamForm />} />
         <Route path="/manage-team" element={<TeamMembers />} />
-        
+        <Route path="/update-profile" element={<EmployeeProfile />} />
+        <Route path="/chat" element={<ChatPage />} />
         {/* Add more admin-specific routes as needed */}
     </Routes>
        

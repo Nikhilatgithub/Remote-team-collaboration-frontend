@@ -12,14 +12,16 @@ const ProjectForm = () => {
     startDate: ''+getTodayDate(),
     endDate: ''+getTommorowDate(),
     status: '',
-    teamId: null
+    teamId: null,
+    teamName: '',
+    TeamDescription: ''
     // Add more fields as needed
   });
 
   const token = localStorage.getItem('token'); // Retrieve the JWT token from localStorage
 
   const [teamData, setTeamData] = useState([]);
-
+  const [teams, setTeams] = useState([]);
   const projectStatus = ["Initialize",
   "Designing",
   "Planning","Implementing","Testing","Deployment","Maintainance"];
@@ -78,6 +80,7 @@ const ProjectForm = () => {
     const loadTeams = async () => {
       try {
         const teams = await fetchTeams();
+        setTeams(teams);
         setTeamData(teams.map(team => `${team.id} ${team.name}`));
       } catch (error) {
         console.error('Failed to load teams:', error);
@@ -185,10 +188,18 @@ const ProjectForm = () => {
                 try{
                   const numberStr = newValue.split(' ')[0];
                   const number = parseInt(numberStr, 10);
-                  setFormData(prevState => ({
+                  teams.find(team=> {if(team.id===number)
+                  {setFormData(prevState => ({
                     ...prevState,
-                    teamId: number
-                  }));
+                    teamId: number,
+                    teamName: team.teamName,
+                    TeamDescription: team.TeamDescription
+                  }));}
+                  })
+                  // setFormData(prevState => ({
+                  //   ...prevState,
+                  //   teamId: number,
+                  // }));
                 }
                 catch(error)
                 {

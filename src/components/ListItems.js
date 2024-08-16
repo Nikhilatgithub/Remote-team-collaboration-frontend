@@ -24,7 +24,7 @@ export const secondaryListItems = (
     <ListSubheader component="div" inset>
       Communication
     </ListSubheader>
-    <ListItemButton>
+    <ListItemButton component={Link} to='/chat'>
       <ListItemIcon>
         <MarkUnreadChatAltIcon />
       </ListItemIcon>
@@ -36,7 +36,7 @@ export const secondaryListItems = (
       </ListItemIcon>
       <ListItemText primary="Video Conference" />
     </ListItemButton>
-    <ListItemButton>
+    <ListItemButton component={Link} to='/update-profile'>
       <ListItemIcon>
         <BadgeIcon />
       </ListItemIcon>

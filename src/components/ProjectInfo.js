@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Paper, Typography, Grid, Box } from '@mui/material';
+import { getEmployeeProjects, setAuthToken } from '../services/EmployeeService';
 
 const ProjectInfo = () => {
   const [project, setProject] = useState({
@@ -10,19 +11,32 @@ const ProjectInfo = () => {
     endDate: '',
     status: ''
   });
+  const token = localStorage.getItem('token'); // Retr
+
 
   useEffect(() => {
     // Fetch project data when the component mounts
-    const fetchProjectData = async () => {
+
+
+    const fetchProjects = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/project'); // Replace with your API endpoint
-        setProject(response.data);
+        setAuthToken(token)
+        const project = await getEmployeeProjects();
+        console.log(project);
+        setProject( ({
+          name: project.name,
+         description: project.description ,
+         startDate: project.startDate,
+         endDate: project.endDate,
+         status: project.status,
+        // teamId: project.teamId
+         }));
       } catch (error) {
-        console.error('Error fetching project data:', error);
+        console.error('Failed to fetch projects:', error);
       }
     };
 
-    fetchProjectData();
+    fetchProjects();
   }, []);
 
   return (

@@ -31,8 +31,24 @@ const LoginPage = () => {
       .then(response => {
         console.log('User registered successfully:', response.data);
         localStorage.setItem('token', response.data.token); // Assuming backend returns a token
-       navigate('/admin');
-       console.log(response.data.token);
+        localStorage.setItem('userRole', response.data.role);
+        localStorage.setItem('userEmail', response.data.email);
+       // localStorage.setItem('userEmail', response.email);
+       let role = String(response.data.role).toLowerCase();
+       if(role==='admin')
+       {
+        navigate('/admin');
+       }
+      else if(role==='manager')
+       {
+        navigate('/manager');
+       }
+       else if(role==='employee')
+       {
+        navigate('/employee');
+       }
+        
+       console.log(response);
        // Redirect or do something after successful login
       })
       .catch(error => {
@@ -115,6 +131,13 @@ const LoginPage = () => {
               <Grid item>
                 <Link href="/register" variant="body2">
                   Create an account? Sign up
+                </Link>
+              </Grid>
+            </Grid>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="/forgot" variant="body2">
+                  Forgot Password
                 </Link>
               </Grid>
             </Grid>

@@ -156,4 +156,47 @@ export const createUser = async (formData) => {
       throw error;
     }
   };
+
+
+   // team related crud oparations
+
+   export const createTeam = async (formData) => {
+    try {
+      const response = await apiClient.post('/manager/teams', formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating tasks:', error);
+      throw error;
+    }
+  };
+
+  // export const fetchTeam = async () => {
+  //   try {
+  //     const response = await apiClient.get('/manager/teams');
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error fetching tasks:', error);
+  //     throw error;
+  //   }
+  // };
+
+  export const updateTeam = async (taskId,formData) => {
+    try {
+      const response = await apiClient.put(`/manager/teams/${taskId}`,formData);
+      return response.data;
+    } catch (error) {
+      console.error('Error updatrinf tasks:', error);
+      throw error;
+    }
+  };
+
+  export const deleteTeam = async (taskId) => {
+    try {
+      const response = await apiClient.delete(`/manager/teams/${taskId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting tasks:', error);
+      throw error;
+    }
+  };
 export default apiClient;

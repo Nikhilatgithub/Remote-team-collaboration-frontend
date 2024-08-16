@@ -100,7 +100,8 @@ export default function Dashboard() {
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  const userRole = 'admin';
+  const userRole = String(localStorage.getItem('userRole')).toLowerCase();
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
